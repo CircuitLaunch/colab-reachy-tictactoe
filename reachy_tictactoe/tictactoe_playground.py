@@ -12,7 +12,7 @@ from reachy.trajectory import TrajectoryPlayer
 
 from .vision import get_board_configuration, is_board_valid
 from .utils import piece2id, id2piece, piece2player
-from .moves import moves, rest_pos, base_pos
+from .moves import moves  # , rest_pos, base_pos
 from .rl_agent import value_actions
 from . import behavior
 
@@ -79,7 +79,7 @@ class TictactoePlayground(object):
         dz = 0.75
         z = np.random.rand() * dz - 0.5
 
-        self.reachy.head.look_at(0.5, y, z, duration=1.5, wait=True)
+        # self.reachy.head.look_at(0.5, y, z, duration=1.5, wait=True)
 
     def run_random_idle_behavior(self):
         logger.info('Reachy is playing a random idle behavior')
@@ -101,7 +101,7 @@ class TictactoePlayground(object):
 
         time.sleep(0.1)
 
-        self.reachy.head.look_at(0.5, 0, z=-0.6, duration=1, wait=True)
+        # self.reachy.head.look_at(0.5, 0, z=-0.6, duration=1, wait=True)
         time.sleep(0.2)
 
         # Wait an image from the camera
@@ -123,9 +123,9 @@ class TictactoePlayground(object):
         )
 
         if not is_board_valid(img):
-            self.reachy.head.compliant = False
+            # self.reachy.head.compliant = False
             time.sleep(0.1)
-            self.reachy.head.look_at(1, 0, 0, duration=0.75, wait=True)
+            # self.reachy.head.look_at(1, 0, 0, duration=0.75, wait=True)
             return
 
         tic = time.time()
@@ -142,9 +142,9 @@ class TictactoePlayground(object):
             },
         )
 
-        self.reachy.head.compliant = False
+        # self.reachy.head.compliant = False
         time.sleep(0.1)
-        self.reachy.head.look_at(1, 0, 0, duration=0.75, wait=True)
+        # self.reachy.head.look_at(1, 0, 0, duration=0.75, wait=True)
 
         return board.flatten()
 
@@ -202,10 +202,10 @@ class TictactoePlayground(object):
         t.start()
 
         self.goto_base_position()
-        self.reachy.head.look_at(0.5, 0, -0.4, duration=1, wait=False)
+        # self.reachy.head.look_at(0.5, 0, -0.4, duration=1, wait=False)
         TrajectoryPlayer(self.reachy, moves['shuffle-board']).play(wait=True)
         self.goto_rest_position()
-        self.reachy.head.look_at(1, 0, 0, duration=1, wait=True)
+        # self.reachy.head.look_at(1, 0, 0, duration=1, wait=True)
         t.join()
 
     def choose_next_action(self, board):
@@ -266,11 +266,11 @@ class TictactoePlayground(object):
         return board
 
     def play_pawn(self, grab_index, box_index):
-        self.reachy.head.look_at(
-            0.3, -0.3, -0.3,
-            duration=0.85,
-            wait=False,
-        )
+        # self.reachy.head.look_at(
+        #    0.3, -0.3, -0.3,
+        #     duration=0.85,
+        #     wait=False,
+        # )
 
         # Goto base position
         self.goto_base_position()
@@ -288,7 +288,11 @@ class TictactoePlayground(object):
             duration=1,
             wait=True,
         )
-        self.reachy.right_arm.hand.close()
+        self.goto_position(  # Trevor change
+            moves['grip_pawn'],
+            duration=0.5,
+            wait=True
+        )
 
         self.reachy.head.left_antenna.goto(45, 1, interpolation_mode='minjerk')
         self.reachy.head.right_antenna.goto(-45, 1, interpolation_mode='minjerk')
@@ -310,11 +314,11 @@ class TictactoePlayground(object):
             wait=True,
         )
 
-        self.reachy.head.look_at(0.5, 0, -0.35, duration=0.5, wait=False)
+        # self.reachy.head.look_at(0.5, 0, -0.35, duration=0.5, wait=False)
         time.sleep(0.1)
 
         # Put it in box_index
-        put = moves[f'put_{box_index}_smooth_10_kp']
+        put = moves[f'put_{box_index}']  # Trevor change
         j = {
             m: j
             for j, m in zip(
@@ -337,9 +341,9 @@ class TictactoePlayground(object):
         self.reachy.head.left_antenna.goto(0, 0.2, interpolation_mode='minjerk')
         self.reachy.head.right_antenna.goto(0, 0.2, interpolation_mode='minjerk')
 
-        self.reachy.head.look_at(1, 0, 0, duration=1, wait=False)
+        # self.reachy.head.look_at(1, 0, 0, duration=1, wait=False)
 
-        if box_index in (8, 9):
+        if box_index in (1, 2):  # Trevor change
             self.goto_position(
                 moves['back_to_back'],
                 duration=1,
@@ -436,7 +440,7 @@ class TictactoePlayground(object):
         self.reachy.right_arm.elbow_pitch.torque_limit = 75
         time.sleep(0.1)
 
-        self.goto_position(base_pos, duration, wait=True)
+        self.goto_position(moves['base_pos'], duration, wait=True)  # Trevor change
 
     def goto_rest_position(self, duration=2.0):
         # FIXME: Why is it needed?
@@ -445,7 +449,7 @@ class TictactoePlayground(object):
         self.goto_base_position(0.6 * duration)
         time.sleep(0.1)
 
-        self.goto_position(rest_pos, 0.4 * duration, wait=True)
+        self.goto_position(moves['rest_pos'], 0.4 * duration, wait=True)  # Trevor change
         time.sleep(0.1)
 
         self.reachy.right_arm.shoulder_pitch.torque_limit = 0
@@ -490,8 +494,8 @@ class TictactoePlayground(object):
 
     def wait_for_cooldown(self):
         self.goto_rest_position()
-        self.reachy.head.look_at(0.5, 0, -0.65, duration=1.25, wait=True)
-        self.reachy.head.compliant = True
+        # self.reachy.head.look_at(0.5, 0, -0.65, duration=1.25, wait=True)
+        # self.reachy.head.compliant = True
 
         while True:
             motor_temperature = np.array([
@@ -517,8 +521,8 @@ class TictactoePlayground(object):
             time.sleep(30)
 
     def enter_sleep_mode(self):
-        self.reachy.head.look_at(0.5, 0, -0.65, duration=1.25, wait=True)
-        self.reachy.head.compliant = True
+        # self.reachy.head.look_at(0.5, 0, -0.65, duration=1.25, wait=True)
+        # self.reachy.head.compliant = True
 
         self._idle_running = Event()
         self._idle_running.set()
@@ -538,9 +542,9 @@ class TictactoePlayground(object):
         self._idle_t.start()
 
     def leave_sleep_mode(self):
-        self.reachy.head.compliant = False
+        # self.reachy.head.compliant = False
         time.sleep(0.1)
-        self.reachy.head.look_at(1, 0, 0, duration=1, wait=True)
+        # self.reachy.head.look_at(1, 0, 0, duration=1, wait=True)
 
         self._idle_running.clear()
         self._idle_t.join()

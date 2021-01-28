@@ -16,7 +16,7 @@ moves = {
     for name in names
 }
 
-
+'''
 rest_pos = {
     'right_arm.shoulder_pitch': 50,
     'right_arm.shoulder_roll': -15,
@@ -37,3 +37,4 @@ base_pos = {
     'right_arm.hand.wrist_roll': 0,
     'right_arm.hand.gripper': -45,
 }
+'''

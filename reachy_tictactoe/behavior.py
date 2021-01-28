@@ -36,7 +36,8 @@ class FollowHand(object):
             v = v + np.array([0.1, 0, 0.1])
 
             try:
-                self.reachy.head.look_at(*v)
+                # self.reachy.head.look_at(*v)
+                pass
             except ValueError:
                 pass
 
@@ -44,7 +45,7 @@ class FollowHand(object):
 
 
 def head_home(reachy, duration):
-    reachy.head.look_at(0.5, 0.0, 0, duration=duration, wait=False)
+    # reachy.head.look_at(0.5, 0.0, 0, duration=duration, wait=False)
     reachy.goto({
         'head.left_antenna': 0,
         'head.right_antenna': 0,
@@ -65,7 +66,7 @@ def sad(reachy):
     ]
 
     for (z, antenna_pos) in pos:
-        reachy.head.look_at(0.5, 0.0, z, duration=1.0, wait=False)
+        # reachy.head.look_at(0.5, 0.0, z, duration=1.0, wait=False)
         reachy.goto({
             'head.left_antenna': antenna_pos,
             'head.right_antenna': -antenna_pos,
@@ -77,7 +78,7 @@ def happy(reachy):
     logger.info('Starting behavior', extra={'behavior': 'happy'})
 
     q = Quaternion(axis=[1, 0, 0], angle=np.deg2rad(-15))
-    reachy.head.neck.orient(q, duration=1, wait=False)
+    # reachy.head.neck.orient(q, duration=1, wait=False)
 
     dur = 3
     t = np.linspace(0, dur, dur * 100)
@@ -98,7 +99,7 @@ def surprise(reachy):
     logger.info('Starting behavior', extra={'behavior': 'suprise'})
 
     q = Quaternion(axis=[1, 0, 0], angle=np.deg2rad(22))
-    reachy.head.neck.orient(q, duration=1, wait=False)
+    # reachy.head.neck.orient(q, duration=1, wait=False)
 
     reachy.goto({
         'head.left_antenna': -5,

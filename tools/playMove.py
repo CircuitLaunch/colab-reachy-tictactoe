@@ -123,6 +123,7 @@ input("Connect the Unity simulator, then press Enter to continue.")
 while True:
     selection = input("Name a move: ")
     
+    '''
     if selection == 'rest_pos':
         reachy.goto(
             goal_positions=rest_pos,
@@ -140,6 +141,8 @@ while True:
             starting_point="goal_position",
         )
     else:
+    '''
+    if True:
         move = moves[selection]
 
         if np.ndim(move[move.files[0]]) == 0:  # Position
