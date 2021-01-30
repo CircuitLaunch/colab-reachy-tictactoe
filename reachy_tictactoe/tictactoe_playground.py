@@ -203,7 +203,16 @@ class TictactoePlayground(object):
 
         self.goto_base_position()
         # self.reachy.head.look_at(0.5, 0, -0.4, duration=1, wait=False)
-        TrajectoryPlayer(self.reachy, moves['shuffle-board']).play(wait=True)
+        m = moves['shuffle-board']  # Trevor change
+        j = {
+            m: j
+            for j, m in zip(
+                np.array(list(m.values()))[:, 0],
+                list(m.keys())
+            )
+        }
+        self.goto_position(j, duration=0.5, wait=True)
+        TrajectoryPlayer(self.reachy, m).play(wait=True)
         self.goto_rest_position()
         # self.reachy.head.look_at(1, 0, 0, duration=1, wait=True)
         t.join()
@@ -411,12 +420,30 @@ class TictactoePlayground(object):
 
     def run_my_turn(self):
         self.goto_base_position()
-        TrajectoryPlayer(self.reachy, moves['my-turn']).play(wait=True)
+        m = moves['my-turn']  # Trevor change
+        j = {
+            m: j
+            for j, m in zip(
+                np.array(list(m.values()))[:, 0],
+                list(m.keys())
+            )
+        }
+        self.goto_position(j, duration=0.5, wait=True)
+        TrajectoryPlayer(self.reachy, m).play(wait=True)
         self.goto_rest_position()
 
     def run_your_turn(self):
         self.goto_base_position()
-        TrajectoryPlayer(self.reachy, moves['your-turn']).play(wait=True)
+        m = moves['your-turn']  # Trevor change
+        j = {
+            m: j
+            for j, m in zip(
+                np.array(list(m.values()))[:, 0],
+                list(m.keys())
+            )
+        }
+        self.goto_position(j, duration=0.5, wait=True)
+        TrajectoryPlayer(self.reachy, m).play(wait=True)
         self.goto_rest_position()
 
     # Robot lower-level control functions
