@@ -6,10 +6,11 @@ import os
 
 from threading import Thread, Event
 
-from reachy import Reachy
-from reachy.parts import RightArm, Head
-from reachy.parts.arm import RightForceGripper
-from reachy.trajectory import TrajectoryPlayer
+import reachy
+# from reachy import Reachy
+# from reachy.parts import RightArm, Head
+# from reachy.parts.arm import RightForceGripper
+# from reachy.trajectory import TrajectoryPlayer
 
 from .vision import get_board_configuration, is_board_valid
 from .utils import piece2id, id2piece, piece2player
@@ -78,7 +79,7 @@ def patch_right_arm_config(arm_cls):
 def patch_force_gripper(forceGripper):
     def __init__(self, root, io):
         """Create a new Force Gripper Hand."""
-        parts.hand.Hand.__init__(self, root=root, io=io)
+        reachy.parts.hand.Hand.__init__(self, root=root, io=io)
 
         dxl_motors = OrderedDict(
             {name: dict(conf) for name, conf in self.dxl_motors.items()}
@@ -97,20 +98,20 @@ def patch_force_gripper(forceGripper):
     return forceGripper
 
 
-RightArm = patch_right_arm_config(RightArm)
-RightForceGripper = patch_force_gripper(RightForceGripper)
+reachy.parts.RightArm = patch_right_arm_config(reachy.parts.RightArm)
+reachy.parts.arm.RightForceGripper = patch_force_gripper(reachy.parts.arm.RightForceGripper)
 
 
 class TictactoePlayground(object):
     def __init__(self):
         logger.info('Creating the playground')
 
-        self.reachy = Reachy(
-            right_arm=RightArm(
+        self.reachy = reachy.Reachy(
+            right_arm=reachy.parts.RightArm(
                 io='/dev/ttyUSB*',
                 hand='force_gripper',
             ),
-            head=Head(
+            head=reachy.parts.Head(
                 io='/dev/ttyUSB*',
             ),
         )
@@ -177,8 +178,8 @@ class TictactoePlayground(object):
         return coin
 
     def analyze_board(self):
-        for disk in self.reachy.head.neck.disks:
-            disk.compliant = False
+        # for disk in self.reachy.head.neck.disks:
+        #     disk.compliant = False
 
         time.sleep(0.1)
 
@@ -199,7 +200,7 @@ class TictactoePlayground(object):
             'Getting an image from camera',
             extra={
                 'img_path': path,
-                'disks': [d.rot_position for d in self.reachy.head.neck.disks],
+            #     'disks': [d.rot_position for d in self.reachy.head.neck.disks],
             },
         )
 
@@ -293,7 +294,7 @@ class TictactoePlayground(object):
             )
         }
         self.goto_position(j, duration=0.5, wait=True)
-        TrajectoryPlayer(self.reachy, m).play(wait=True)
+        reachy.trajectory.TrajectoryPlayer(self.reachy, m).play(wait=True)
         self.goto_rest_position()
         # self.reachy.head.look_at(1, 0, 0, duration=1, wait=True)
         t.join()
@@ -417,7 +418,7 @@ class TictactoePlayground(object):
             )
         }
         self.goto_position(j, duration=0.5, wait=True)
-        TrajectoryPlayer(self.reachy, put).play(wait=True)
+        reachy.trajectory.TrajectoryPlayer(self.reachy, put).play(wait=True)
 
         self.reachy.right_arm.hand.open()
 
@@ -510,7 +511,7 @@ class TictactoePlayground(object):
             )
         }
         self.goto_position(j, duration=0.5, wait=True)
-        TrajectoryPlayer(self.reachy, m).play(wait=True)
+        reachy.trajectory.TrajectoryPlayer(self.reachy, m).play(wait=True)
         self.goto_rest_position()
 
     def run_your_turn(self):
@@ -524,7 +525,7 @@ class TictactoePlayground(object):
             )
         }
         self.goto_position(j, duration=0.5, wait=True)
-        TrajectoryPlayer(self.reachy, m).play(wait=True)
+        reachy.trajectory.TrajectoryPlayer(self.reachy, m).play(wait=True)
         self.goto_rest_position()
 
     # Robot lower-level control functions
@@ -584,13 +585,13 @@ class TictactoePlayground(object):
         motor_temperature = np.array([
             m.temperature for m in self.reachy.motors
         ])
-        orbita_temperature = np.array([
-            d.temperature for d in self.reachy.head.neck.disks
-        ])
+        # orbita_temperature = np.array([
+        #     d.temperature for d in self.reachy.head.neck.disks
+        # ])
 
         temperatures = {}
         temperatures.update({m.name: m.temperature for m in self.reachy.motors})
-        temperatures.update({d.alias: d.temperature for d in self.reachy.head.neck.disks})
+        # temperatures.update({d.alias: d.temperature for d in self.reachy.head.neck.disks})
 
         logger.info(
             'Checking Reachy motors temperature',
@@ -598,7 +599,7 @@ class TictactoePlayground(object):
                 'temperatures': temperatures
             }
         )
-        return np.any(motor_temperature > 50) or np.any(orbita_temperature > 45)
+        return np.any(motor_temperature > 50)  # or np.any(orbita_temperature > 45)
 
     def wait_for_cooldown(self):
         self.goto_rest_position()
@@ -609,13 +610,13 @@ class TictactoePlayground(object):
             motor_temperature = np.array([
                 m.temperature for m in self.reachy.motors
             ])
-            orbita_temperature = np.array([
-                d.temperature for d in self.reachy.head.neck.disks
-            ])
+            # orbita_temperature = np.array([
+            #     d.temperature for d in self.reachy.head.neck.disks
+            # ])
 
             temperatures = {}
             temperatures.update({m.name: m.temperature for m in self.reachy.motors})
-            temperatures.update({d.name: d.temperature for d in self.reachy.head.neck.disks})
+            # temperatures.update({d.name: d.temperature for d in self.reachy.head.neck.disks})
             logger.warning(
                 'Motors cooling down...',
                 extra={
@@ -623,7 +624,7 @@ class TictactoePlayground(object):
                 },
             )
 
-            if np.all(motor_temperature < 45) and np.all(orbita_temperature < 40):
+            if np.all(motor_temperature < 45)  # and np.all(orbita_temperature < 40):
                 break
 
             time.sleep(30)
