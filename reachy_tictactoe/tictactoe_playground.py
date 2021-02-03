@@ -19,6 +19,84 @@ from . import behavior
 
 logger = logging.getLogger('reachy.tictactoe')
 
+def patch_right_arm_config(arm_cls):
+    arm_cls.dxl_motors = OrderedDict(
+        [
+            (
+                "shoulder_pitch",
+                {
+                    "id": 10,
+                    "offset": 0.0,
+                    "orientation": "indirect",
+                    "angle-limits": [-180, 60],
+                    "link-translation": [0, -0.19, 0],
+                    "link-rotation": [0, 1, 0],
+                },
+            ),
+            (
+                "shoulder_roll",
+                {
+                    "id": 11,
+                    "offset": 90.0,
+                    "orientation": "indirect",
+                    "angle-limits": [-100, 90],
+                    "link-translation": [0, 0, 0],
+                    "link-rotation": [1, 0, 0],
+                },
+            ),
+            (
+                "arm_yaw",
+                {
+                    "id": 12,
+                    "offset": 0.0,
+                    "orientation": "indirect",
+                    "angle-limits": [-90, 90],
+                    "link-translation": [0, 0, 0],
+                    "link-rotation": [0, 0, 1],
+                },
+            ),
+            (
+                "elbow_pitch",
+                {
+                    "id": 13,
+                    "offset": 0.0,
+                    "orientation": "indirect",
+                    "angle-limits": [0, 125],
+                    "link-translation": [0, 0, -0.28],
+                    "link-rotation": [0, 1, 0],
+                },
+            ),
+        ]
+    )
+
+    return arm_cls
+
+
+def patch_force_gripper(forceGripper):
+    def __init__(self, root, io):
+        """Create a new Force Gripper Hand."""
+        parts.hand.Hand.__init__(self, root=root, io=io)
+
+        dxl_motors = OrderedDict(
+            {name: dict(conf) for name, conf in self.dxl_motors.items()}
+        )
+
+        self.attach_dxl_motors(dxl_motors)
+
+        """
+        self._load_sensor = self.io.find_module('force_gripper')
+        self._load_sensor.offset = 4
+        self._load_sensor.scale = 10000
+        """
+
+    forceGripper.__init__ = __init__
+
+    return forceGripper
+
+
+parts.RightArm = patch_right_arm_config(parts.RightArm)
+parts.arm.RightForceGripper = patch_force_gripper(parts.arm.RightForceGripper)
+
 
 class TictactoePlayground(object):
     def __init__(self):
