@@ -94,7 +94,7 @@ def patch_force_gripper(forceGripper):
     return forceGripper
 
 
-reachy.parts.RightArm = patch_right_arm_config(reachy.parts.RightArm)
+RightArm = patch_right_arm_config(RightArm)
 reachy.parts.arm.RightForceGripper = patch_force_gripper(reachy.parts.arm.RightForceGripper)
 
 
