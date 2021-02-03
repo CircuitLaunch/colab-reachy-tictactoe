@@ -16,6 +16,8 @@ from .moves import moves  # , rest_pos, base_pos
 from .rl_agent import value_actions
 from . import behavior
 
+from collections import OrderedDict
+
 
 logger = logging.getLogger('reachy.tictactoe')
 
