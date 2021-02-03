@@ -8,6 +8,7 @@ from threading import Thread, Event
 
 from reachy import Reachy
 from reachy.parts import RightArm, Head
+from reachy.parts.arm import RightForceGripper
 from reachy.trajectory import TrajectoryPlayer
 
 from .vision import get_board_configuration, is_board_valid
@@ -97,7 +98,7 @@ def patch_force_gripper(forceGripper):
 
 
 RightArm = patch_right_arm_config(RightArm)
-reachy.parts.arm.RightForceGripper = patch_force_gripper(reachy.parts.arm.RightForceGripper)
+RightForceGripper = patch_force_gripper(RightForceGripper)
 
 
 class TictactoePlayground(object):
