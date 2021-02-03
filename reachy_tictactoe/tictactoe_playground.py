@@ -94,8 +94,8 @@ def patch_force_gripper(forceGripper):
     return forceGripper
 
 
-parts.RightArm = patch_right_arm_config(parts.RightArm)
-parts.arm.RightForceGripper = patch_force_gripper(parts.arm.RightForceGripper)
+reachy.parts.RightArm = patch_right_arm_config(reachy.parts.RightArm)
+reachy.parts.arm.RightForceGripper = patch_force_gripper(reachy.parts.arm.RightForceGripper)
 
 
 class TictactoePlayground(object):
