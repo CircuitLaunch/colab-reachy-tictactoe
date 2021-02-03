@@ -202,7 +202,7 @@ class LimitedTictactoePlayground(object):
 
         # self.reachy.head.look_at(1, 0, 0, duration=1, wait=False)
 
-        if box_index in (1, 2):  # Trevor change
+        if box_index in (8, 9):
             self.goto_position(
                 moves["back_to_back"], duration=1, wait=True,
             )
