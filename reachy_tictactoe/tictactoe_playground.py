@@ -97,10 +97,38 @@ def patch_force_gripper(forceGripper):
 
     return forceGripper
 
+def patch_head_config(head_cls):
+    # if it's 'armv7l', assume that it's the raspberry pi 4 on reachy
+    head_cls.dxl_motors = OrderedDict([
+        ('left_antenna', {
+            'id': 30, 'offset': 26.0, 'orientation': 'direct',
+            'angle-limits': [-150, 150],
+        }),
+        ('right_antenna', {
+            'id': 31, 'offset': 90.0, 'orientation': 'direct',
+            'angle-limits': [-150, 150],
+        }),
+    ])
+    
+    return head_cls
+
+def patch_head(head_cls):
+    def __init__(self, io, default_camera='right'):
+        """Create new Head part."""
+        reachy.parts.part.ReachyPart.__init__(self, name='head', io=io)
+
+        #self.neck = self.create_orbita_actuator('neck', Head.orbita_config)
+        self.attach_dxl_motors(reachy.parts.Head.dxl_motors)
+        #self.camera = self.io.find_dual_camera(default_camera)
+
+    head_cls.__init__ = __init__
+
+    return head_cls
 
 reachy.parts.RightArm = patch_right_arm_config(reachy.parts.RightArm)
 reachy.parts.arm.RightForceGripper = patch_force_gripper(reachy.parts.arm.RightForceGripper)
-
+reachy.parts.Head = patch_head_config(reachy.parts.Head)
+reachy.parts.Head = patch_head(reachy.parts.Head)
 
 class TictactoePlayground(object):
     def __init__(self):
