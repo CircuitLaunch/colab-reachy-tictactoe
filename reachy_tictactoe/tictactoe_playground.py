@@ -119,7 +119,7 @@ def patch_head(head_cls):
 
         #self.neck = self.create_orbita_actuator('neck', Head.orbita_config)
         self.attach_dxl_motors(reachy.parts.Head.dxl_motors)
-        #self.camera = self.io.find_dual_camera(default_camera)
+        self.camera = self.io.find_dual_camera(default_camera)
 
     head_cls.__init__ = __init__
 
