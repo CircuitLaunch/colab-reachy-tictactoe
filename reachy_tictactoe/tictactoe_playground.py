@@ -599,7 +599,7 @@ class TictactoePlayground(object):
                 'temperatures': temperatures
             }
         )
-        return np.any(motor_temperature > 50)  # or np.any(orbita_temperature > 45)
+        return motor_temperature > 50  # or np.any(orbita_temperature > 45)
 
     def wait_for_cooldown(self):
         self.goto_rest_position()
@@ -624,7 +624,7 @@ class TictactoePlayground(object):
                 },
             )
 
-            if np.all(motor_temperature < 45)  # and np.all(orbita_temperature < 40):
+            if motor_temperature < 45:  # and np.all(orbita_temperature < 40):
                 break
 
             time.sleep(30)
