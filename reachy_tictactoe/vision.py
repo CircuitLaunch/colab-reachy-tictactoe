@@ -26,23 +26,23 @@ valid_classifier = ClassificationEngine(os.path.join(model_path, 'ttt-valid-boar
 valid_labels = dataset_utils.read_label_file(os.path.join(model_path, 'ttt-valid-board.txt'))
 
 
-board_cases = np.array((
-    ((209, 316, 253, 346), #Coordinates first board cases (top-left corner) (Xbl, Xbr, Ytr, Ybr)
-     (316, 425, 253, 346), #Coordinates second board cases
-     (425, 529, 253, 346),),
+board_cases = np.array((#Coordinates first board cases (top-left corner) (Xbl, Xbr, Ytr, Ybr)
+    ((120, 270, 180, 290), 
+    (270, 420, 180, 290),
+    (420, 550, 180, 290),),
 
-    ((189, 306, 346, 455),
-     (306, 428, 346, 455),
-     (428, 538, 346, 455),),
+    ((110, 280, 290, 430),
+    (280, 420, 290, 430),
+    (420, 570, 290, 430),),
 
-    ((174, 299, 455, 580),
-     (299, 429, 455, 580),
-     (429, 551, 455, 580),),
-))
+    ((100, 270, 430, 580),
+    (270, 440, 430, 580),
+    (440, 610, 430, 580),),
+))#Coordinates second board cases
 
 # left, right, top, bottom
 board_rect = np.array((
-    250, 700, 350, 1000,
+    100, 600, 180, 600,
 ))
 
 
