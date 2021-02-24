@@ -7,59 +7,6 @@ from collections import OrderedDict
 from glob import glob
 
 
-def patch_right_arm_config(arm_cls):
-    arm_cls.dxl_motors = OrderedDict(
-        [
-            (
-                "shoulder_pitch",
-                {
-                    "id": 10,
-                    "offset": 0.0,
-                    "orientation": "indirect",
-                    "angle-limits": [-180, 60],
-                    "link-translation": [0, -0.19, 0],
-                    "link-rotation": [0, 1, 0],
-                },
-            ),
-            (
-                "shoulder_roll",
-                {
-                    "id": 11,
-                    "offset": 90.0,
-                    "orientation": "indirect",
-                    "angle-limits": [-100, 90],
-                    "link-translation": [0, 0, 0],
-                    "link-rotation": [1, 0, 0],
-                },
-            ),
-            (
-                "arm_yaw",
-                {
-                    "id": 12,
-                    "offset": 0.0,
-                    "orientation": "indirect",
-                    "angle-limits": [-90, 90],
-                    "link-translation": [0, 0, 0],
-                    "link-rotation": [0, 0, 1],
-                },
-            ),
-            (
-                "elbow_pitch",
-                {
-                    "id": 13,
-                    "offset": 0.0,
-                    "orientation": "indirect",
-                    "angle-limits": [0, 125],
-                    "link-translation": [0, 0, -0.28],
-                    "link-rotation": [0, 1, 0],
-                },
-            ),
-        ]
-    )
-
-    return arm_cls
-
-
 def patch_force_gripper(forceGripper):
     def __init__(self, root, io):
         """Create a new Force Gripper Hand."""
@@ -82,7 +29,6 @@ def patch_force_gripper(forceGripper):
     return forceGripper
 
 
-parts.RightArm = patch_right_arm_config(parts.RightArm)
 parts.arm.RightForceGripper = patch_force_gripper(parts.arm.RightForceGripper)
 
 dir_path = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "reachy_tictactoe", "moves")
